@@ -9,11 +9,5 @@ export default {
   server: {
     host: true, // слушаем все интерфейсы, чтобы фронт был доступен по локальной сети
     allowedHosts: ['oddly-tonic-mule.cloudpub.ru'],
-    proxy: {
-      '/api': {
-        target: 'http://192.168.31.249:5173',
-        rewrite: (p) => p.replace(/^\/api/, ''),
-      },
-    },
   }
 };
