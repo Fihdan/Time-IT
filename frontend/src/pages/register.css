@@ -1,0 +1,321 @@
+/* register.css — страница регистрации ЭХО.
+   Тот же внешний вид, что и в макете (кремовый холст, оливковые полосы,
+   песочная панель), но без абсолютного позиционирования полей: панель
+   занимает весь экран по высоте, элементы идут столбцом и масштабируются
+   через clamp(). Зазоров по краям нет, на узких экранах панель растягивается
+   на всю ширину. */
+
+.stage-wrapper {
+  --cream: #fffdf8;
+  --sand: #e8d9c3;
+  --olive: #b0af66;
+  --orange: #d99a35;
+  --placeholder: #bdbdbd;
+  --ink: #000;
+
+  /* адаптивные размеры */
+  --bar-w: clamp(20px, 2.8vw, 54px);
+  --panel-w: clamp(340px, 32vw, 640px);
+  --field-h: clamp(46px, min(3.6vw, 6.4vh), 68px);
+  --gap: clamp(12px, 2.2vh, 26px);
+  --fs-title: clamp(24px, 2.2vw, 40px);
+  --fs-main: clamp(17px, 1.5vw, 28px);
+  --fs-small: clamp(14px, 1.2vw, 22px);
+
+  position: fixed;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: Inter, Arial, sans-serif;
+}
+
+.stage-wrapper * {
+  box-sizing: border-box;
+}
+
+/* Холст на весь экран */
+#fullhd {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  background: var(--cream);
+}
+
+/* Оливковые полосы по краям */
+.side {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  width: var(--bar-w);
+  background: var(--olive);
+}
+
+.side--left {
+  left: 0;
+}
+
+.side--right {
+  right: 0;
+}
+
+/* Песочная панель на всю высоту, содержимое — столбцом по центру */
+.form-panel {
+  flex: 0 0 auto;
+  width: var(--panel-w);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(32px, 5vh, 72px) clamp(28px, 2.8vw, 56px) clamp(24px, 3.5vh, 48px);
+  background: var(--sand);
+  text-align: center;
+}
+
+/* Кнопка «назад» */
+.back-button {
+  position: absolute;
+  z-index: 2;
+  top: clamp(12px, 1.8vw, 32px);
+  left: calc(var(--bar-w) + clamp(12px, 1.6vw, 32px));
+  width: clamp(52px, 6vw, 110px);
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 24%;
+  background: var(--olive);
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.back-button:hover {
+  filter: brightness(1.05);
+}
+
+.back-button svg {
+  width: 58%;
+  height: 58%;
+  fill: none;
+  stroke: #111;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.welcome-title {
+  margin: 0;
+  font-size: var(--fs-title);
+  line-height: 1.22;
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+.title-underline {
+  height: 1px;
+  width: 100%;
+  margin: 8px 0 calc(var(--gap) * 1.4);
+  background: var(--orange);
+}
+
+/* Форма и поля */
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.form-input {
+  width: 100%;
+  height: var(--field-h);
+  padding: 0 clamp(12px, 1.1vw, 20px);
+  border: 0;
+  border-radius: 10px;
+  outline: 2px solid transparent;
+  background: var(--cream);
+  color: var(--ink);
+  font: 400 var(--fs-main) / 1.2 Inter, Arial, sans-serif;
+  transition: outline-color 0.15s ease;
+}
+
+.form-input::placeholder {
+  color: var(--placeholder);
+  opacity: 1;
+}
+
+.form-input:focus {
+  outline-color: var(--orange);
+}
+
+/* Подсказка под полем логина */
+.field-hint {
+  align-self: stretch;
+  margin-top: calc(var(--gap) * -0.3);
+  font-size: clamp(13px, 1.05vw, 17px);
+  line-height: 1.35;
+  color: var(--placeholder);
+}
+
+/* Поля пароля: внутри кнопка-замок */
+.password-field {
+  position: relative;
+  width: 100%;
+}
+
+.password-field .form-input {
+  padding-right: calc(var(--field-h) * 0.95);
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--field-h) * 0.1);
+  width: calc(var(--field-h) * 0.7);
+  height: calc(var(--field-h) * 0.7);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #7a7a7a;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.password-toggle:hover {
+  color: var(--ink);
+  background: rgba(0, 0, 0, 0.07);
+}
+
+.password-toggle svg {
+  width: 56%;
+  height: 56%;
+}
+
+/* Чекбокс с условиями */
+.terms-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 2px;
+  text-align: left;
+}
+
+.terms-row input {
+  flex: 0 0 clamp(20px, 1.6vw, 28px);
+  width: clamp(20px, 1.6vw, 28px);
+  height: clamp(20px, 1.6vw, 28px);
+  margin: 1px 0 0;
+  accent-color: var(--orange);
+  cursor: pointer;
+}
+
+.terms-row label {
+  font-size: clamp(13px, 1vw, 17px);
+  line-height: 1.35;
+}
+
+.terms-link,
+.login-prompt a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Кнопка регистрации */
+.register-button {
+  align-self: center;
+  min-width: 70%;
+  height: calc(var(--field-h) * 1.1);
+  margin-top: 4px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--orange);
+  font: 400 clamp(18px, 1.6vw, 30px) / 1 Inter, Arial, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.register-button:hover {
+  filter: brightness(1.04);
+}
+
+.register-button:active {
+  transform: scale(0.99);
+}
+
+/* Сообщение валидации: место зарезервировано, чтобы форма не «прыгала» */
+.form-message {
+  min-height: 1.4em;
+  margin: 0;
+  font-size: clamp(13px, 1vw, 17px);
+  line-height: 1.4;
+  text-align: center;
+}
+
+.form-message.error {
+  color: #9b2c20;
+}
+
+.form-message.success {
+  color: #356b36;
+}
+
+/* «Уже есть аккаунт?» */
+.login-prompt {
+  margin: calc(var(--gap) * 0.6) 0 0;
+  font-size: var(--fs-small);
+  line-height: 1.3;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Телефоны и узкие окна: панель на всю ширину (но не шире 560px),
+   тонкие оливковые полосы, кнопка «назад» поверх панели */
+@media (max-width: 760px) {
+  .stage-wrapper {
+    --bar-w: 12px;
+    --panel-w: min(100%, 560px);
+    --field-h: 52px;
+    --gap: 14px;
+    --fs-title: clamp(22px, 6vw, 30px);
+    --fs-main: 18px;
+    --fs-small: 15px;
+  }
+
+  .form-panel {
+    padding: 104px clamp(28px, 9vw, 64px) 32px;
+  }
+
+  .back-button {
+    top: 16px;
+    left: 26px;
+    width: 56px;
+  }
+
+  .register-button {
+    font-size: 20px;
+  }
+
+  .terms-row label {
+    font-size: 13px;
+  }
+}

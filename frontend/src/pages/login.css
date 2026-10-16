@@ -1,0 +1,297 @@
+/* login.css — страница входа ЭХО.
+   Холст занимает весь экран без зазоров: оливковые полосы по краям,
+   песочная панель по центру на всю высоту. Размеры элементов плавно
+   масштабируются через clamp() от ширины/высоты окна, панель и поля
+   не «плывут» при любых пропорциях экрана.
+   Переменные и глобальные правила ограничены контейнером .page-shell. */
+
+.page-shell {
+  --paper: #fffdf8;
+  --panel: #e8d9c3;
+  --olive: #b0af66;
+  --gold: #d99a35;
+  --muted: #bdbdbd;
+  --ink: #080808;
+
+  /* адаптивные размеры */
+  --bar-w: clamp(20px, 2.8vw, 54px);
+  --panel-w: clamp(340px, 32vw, 640px);
+  --field-h: clamp(46px, min(3.6vw, 6.4vh), 68px);
+  --gap: clamp(18px, 3.4vh, 40px);
+  --fs-title: clamp(24px, 2.2vw, 40px);
+  --fs-main: clamp(17px, 1.5vw, 28px);
+  --fs-small: clamp(14px, 1.2vw, 22px);
+
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Inter, Arial, sans-serif;
+}
+
+.page-shell * {
+  box-sizing: border-box;
+}
+
+.login-screen {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  background: var(--paper);
+}
+
+.side-bar {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  width: var(--bar-w);
+  background: var(--olive);
+}
+
+.side-bar--left {
+  left: 0;
+}
+
+.side-bar--right {
+  right: 0;
+}
+
+.login-panel {
+  flex: 0 0 auto;
+  width: var(--panel-w);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(40px, 6vh, 80px) clamp(28px, 2.8vw, 56px) clamp(28px, 4vh, 56px);
+  background: var(--panel);
+  text-align: center;
+}
+
+.login-panel h1 {
+  margin: 0;
+  font-size: var(--fs-title);
+  line-height: 1.22;
+  font-weight: 400;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.heading-line {
+  height: 1px;
+  width: 100%;
+  margin: 8px auto var(--gap);
+  background: var(--gold);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap);
+}
+
+.login-form input {
+  width: 100%;
+  height: var(--field-h);
+  border: 0;
+  border-radius: 9px;
+  outline: 2px solid transparent;
+  background: var(--paper);
+  padding: 0 14px;
+  font: inherit;
+  font-size: var(--fs-main);
+  color: var(--ink);
+  transition: outline-color 0.15s ease;
+}
+
+.login-form input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+.login-form input:focus {
+  outline-color: var(--gold);
+}
+
+/* Поле пароля с кнопкой-замком показа/скрытия символов */
+.password-field {
+  position: relative;
+  width: 100%;
+}
+
+.password-field input {
+  padding-right: calc(var(--field-h) * 0.95);
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--field-h) * 0.1);
+  width: calc(var(--field-h) * 0.7);
+  height: calc(var(--field-h) * 0.7);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #7a7a7a;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.password-toggle:hover {
+  color: var(--ink);
+  background: rgba(0, 0, 0, 0.07);
+}
+
+.password-toggle svg {
+  width: 56%;
+  height: 56%;
+}
+
+/* Подсказка под полем «Логин или email» */
+.login-hint {
+  align-self: stretch;
+  margin-top: calc(var(--gap) * -0.55);
+  font-size: clamp(13px, 0.95vw, 16px);
+  line-height: 1.35;
+  color: #6b6b6b;
+}
+
+.submit-button {
+  min-width: 50%;
+  height: calc(var(--field-h) * 1.1);
+  padding: 0 28px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--gold);
+  color: #000;
+  font: inherit;
+  font-size: clamp(20px, 1.9vw, 34px);
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.submit-button:hover {
+  filter: brightness(1.06);
+}
+
+.submit-button:active {
+  transform: scale(0.98);
+}
+
+.reset-link {
+  display: inline-block;
+  align-self: center;
+  margin-top: var(--gap);
+  font-size: var(--fs-small);
+  color: #000;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.register-prompt {
+  margin: calc(var(--gap) * 0.8) 0 0;
+  font-size: var(--fs-small);
+}
+
+.register-prompt a {
+  color: #000;
+  text-underline-offset: 2px;
+}
+
+.back-button {
+  position: absolute;
+  z-index: 2;
+  top: clamp(12px, 1.8vw, 32px);
+  left: calc(var(--bar-w) + clamp(12px, 1.6vw, 32px));
+  width: clamp(52px, 6vw, 110px);
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 24%;
+  background: var(--olive);
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.back-button svg {
+  width: 58%;
+  height: 58%;
+  fill: none;
+  stroke: #111;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.back-button:hover {
+  filter: brightness(1.05);
+}
+
+/* Сообщение валидации: место зарезервировано, чтобы форма не «прыгала» */
+.form-message {
+  min-height: 1.4em;
+  margin: 14px 0 0;
+  font-size: clamp(13px, 1vw, 17px);
+  line-height: 1.4;
+}
+
+.form-message.error {
+  color: #9b2c20;
+}
+
+.form-message.success {
+  color: #356b36;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Телефоны и узкие окна: панель на всю ширину (но не шире 560px),
+   тонкие оливковые полосы по краям, кнопка «назад» поверх панели */
+@media (max-width: 760px) {
+  .page-shell {
+    --bar-w: 12px;
+    --panel-w: min(100%, 560px);
+    --field-h: 52px;
+    --gap: 22px;
+    --fs-title: clamp(22px, 6vw, 30px);
+    --fs-main: 18px;
+    --fs-small: 15px;
+  }
+
+  .login-panel {
+    padding: 104px clamp(28px, 9vw, 64px) 36px;
+  }
+
+  .submit-button {
+    font-size: 21px;
+  }
+
+  .back-button {
+    top: 16px;
+    left: 26px;
+    width: 56px;
+  }
+}

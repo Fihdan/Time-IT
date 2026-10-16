@@ -1,0 +1,1042 @@
+/* editor.css: стили дизайнера + доработки под React-редактор */
+
+:root {
+  --ochre: #d99a35;
+  --ochre-dark: #b9781e;
+  --olive: #b0af66;
+  --olive-dark: #858447;
+  --paper: #fffdf8;
+  --card: #e8d9c3;
+  --ink: #252318;
+  --muted: #777568;
+  --line: #e8ddc9;
+  --radius: 14px;
+  --shadow: 0 12px 34px rgba(58, 45, 21, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+html {
+  min-width: 320px;
+}
+body {
+  margin: 0;
+  color: var(--ink);
+  background: #f1eee7;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  min-height: 100vh;
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+button {
+  color: inherit;
+}
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(217, 154, 53, 0.45);
+  outline-offset: 3px;
+}
+
+.app {
+  width: min(1600px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 22px 22px 0;
+  display: flex;
+  flex-direction: column;
+}
+.topbar {
+  min-height: 64px;
+  padding: 0 22px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--ochre);
+  border-radius: 15px 15px 0 0;
+  box-shadow: var(--shadow);
+}
+.brand {
+  margin: 0;
+  color: inherit;
+  text-decoration: none;
+  font-family: "Julius Sans One", "Segoe UI", sans-serif;
+  font-weight: 500;
+  font-size: 25px;
+  letter-spacing: 0.06em;
+}
+.topbar-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.icon-button {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+.icon-button:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+.icon-button:active {
+  transform: scale(0.96);
+}
+.icon-button:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+.icon-button svg {
+  width: 27px;
+  height: 27px;
+  stroke: currentColor;
+}
+
+/* ——— вход / пользователь в шапке редактора ——— */
+.login-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--ink);
+}
+.user-panel {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.user-login {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+}
+.logout-button {
+  padding: 7px 14px;
+  border: 1px solid rgba(8, 7, 6, 0.35);
+  border-radius: 18px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--ink);
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.logout-button:hover {
+  background: var(--ink);
+  color: #fff;
+}
+.user-icon {
+  width: 30px;
+  height: 34px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) 270px;
+  min-height: 650px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+.tool-sidebar {
+  padding: 14px 12px;
+  background: var(--olive);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tool-button {
+  width: 100%;
+  min-height: 112px;
+  padding: 12px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 253, 248, 0.38);
+  background: transparent;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.25;
+  transition: background 0.18s ease, border-radius 0.18s ease;
+}
+/* разделитель убираем только у последней кнопки столбца;
+   кнопка «Вставка картинки» обёрнута в .tool-button-wrap и не должна терять свою границу */
+.tool-sidebar > .tool-button:last-child {
+  border-bottom: 0;
+}
+.tool-button:hover,
+.tool-button.is-active {
+  background: rgba(255, 253, 248, 0.2);
+  border-radius: 10px;
+}
+.tool-button svg {
+  width: 35px;
+  height: 35px;
+  stroke: currentColor;
+}
+.tool-button span {
+  font-size: 14px;
+}
+
+/* кнопка «Вставка картинки» с выпадающим меню */
+.tool-button-wrap {
+  position: relative;
+}
+.tool-menu {
+  position: absolute;
+  z-index: 15;
+  left: calc(100% + 10px);
+  top: 0;
+  width: 240px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid rgba(94, 73, 40, 0.1);
+  border-radius: 12px;
+  background: var(--paper);
+  box-shadow: 0 18px 40px rgba(58, 45, 21, 0.2);
+}
+.tool-menu::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  left: -7px;
+  width: 12px;
+  height: 12px;
+  border-left: 1px solid rgba(94, 73, 40, 0.1);
+  border-bottom: 1px solid rgba(94, 73, 40, 0.1);
+  background: var(--paper);
+  transform: rotate(45deg);
+}
+.tool-menu-item {
+  width: 100%;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+.tool-menu-item:hover {
+  background: rgba(217, 154, 53, 0.13);
+}
+.tool-menu-item svg {
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  stroke: var(--ochre-dark);
+}
+.tool-menu-item span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.tool-menu-item strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+.tool-menu-item small {
+  font-size: 11px;
+  line-height: 1.3;
+  opacity: 0.7;
+}
+
+/* меню «Время открытки» */
+.tool-menu-time {
+  width: 280px;
+  padding: 10px;
+  gap: 8px;
+  /* кнопка «Время открытки» последняя в сайдбаре: открываем меню вверх,
+     чтобы оно не выходило за нижний край экрана и не появлялась вертикальная прокрутка */
+  top: auto;
+  bottom: 0;
+}
+.tool-menu-time::before {
+  top: auto;
+  bottom: 18px;
+}
+.time-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.time-field label {
+  font-size: 13px;
+  font-weight: 600;
+}
+.time-field input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgba(50, 45, 24, 0.25);
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.82);
+  color: var(--ink);
+}
+.time-field small {
+  font-size: 11px;
+  line-height: 1.3;
+  opacity: 0.7;
+}
+.time-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+/* дата: рукописный ввод + кнопка-календарь */
+.date-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.date-wrap input[type="text"] {
+  padding-right: 30px;
+}
+.date-picker-btn {
+  position: absolute;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  color: var(--ochre-dark);
+}
+.date-picker-btn:hover {
+  background: rgba(217, 154, 53, 0.15);
+}
+.date-picker-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+}
+.time-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(94, 73, 40, 0.12);
+}
+.tool-menu-item:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.editor {
+  min-width: 0;
+  padding: 28px clamp(18px, 3.2vw, 48px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.editor-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.eyebrow {
+  margin: 0 0 5px;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+}
+.editor-heading h2 {
+  margin: 0;
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 500;
+}
+.save-status {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* поле открытки: внутри холст с блоками */
+.postcard {
+  position: relative;
+  isolation: isolate;
+  height: clamp(400px, 64vh, 660px);
+  padding: 12px;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px rgba(94, 73, 40, 0.05);
+}
+.postcard::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1.5px dashed #898779;
+  border-radius: 9px;
+  pointer-events: none;
+}
+.postcard-stage {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+.empty-prompt {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 8px 12px;
+  color: #817d72;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 16px;
+  background: transparent;
+  border: 0;
+}
+.empty-prompt:hover {
+  color: var(--ink);
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.quick-card {
+  min-height: 135px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  border: 1px solid rgba(128, 81, 18, 0.08);
+  border-radius: 10px;
+  background: var(--ochre);
+  cursor: pointer;
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+.quick-card:hover {
+  background: #e3a747;
+  box-shadow: 0 8px 20px rgba(128, 81, 18, 0.12);
+  transform: translateY(-2px);
+}
+.quick-card span {
+  font-size: 18px;
+}
+.quick-card svg {
+  width: 48px;
+  height: 48px;
+  stroke: currentColor;
+}
+
+.settings {
+  padding: 24px 18px;
+  background: var(--olive);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.settings h2 {
+  margin: 0;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 253, 248, 0.5);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+.setting-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.section-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  opacity: 0.85;
+}
+.copyright-note {
+  margin: 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--ochre);
+  border-radius: 8px;
+  background: rgba(217, 154, 53, 0.09);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: left;
+}
+.range-setting {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.range-setting label {
+  font-size: 14px;
+  text-align: center;
+}
+.range-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.range-row svg {
+  flex: 0 0 19px;
+  width: 19px;
+  height: 19px;
+  stroke: currentColor;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--ochre-dark);
+  cursor: pointer;
+}
+
+/* прикреплённые голос и музыка */
+.attached {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+}
+.attached span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.attached button {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 253, 248, 0.35);
+  cursor: pointer;
+}
+.attached button:hover {
+  background: rgba(255, 253, 248, 0.6);
+}
+
+.accordion {
+  padding: 9px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 253, 248, 0.24);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+}
+.accordion svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.18s ease;
+}
+.accordion[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+.accordion-panel {
+  display: grid;
+  gap: 10px;
+  padding: 10px 0 14px;
+}
+.field-label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+}
+.field-label select,
+.field-label input,
+.field-label textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(50, 45, 24, 0.25);
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.82);
+  color: var(--ink);
+}
+.field-label input[type="color"] {
+  height: 38px;
+  padding: 2px;
+  cursor: pointer;
+}
+.field-label textarea {
+  min-height: 85px;
+  resize: vertical;
+}
+.field-label select:disabled,
+.field-label input:disabled,
+.field-label textarea:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-row {
+  display: flex;
+  gap: 6px;
+}
+.mini-button {
+  flex: 1;
+  padding: 8px 4px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.45);
+  cursor: pointer;
+  font-size: 13px;
+}
+.mini-button:hover {
+  background: rgba(255, 253, 248, 0.7);
+}
+
+.preview-button {
+  margin-top: auto;
+  min-height: 52px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ochre);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1.25;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+.preview-button:hover {
+  background: #e5a642;
+}
+.preview-button:active {
+  transform: scale(0.98);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* окно записи голоса */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(37, 35, 24, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.modal-backdrop[hidden] {
+  display: none;
+}
+.modal {
+  width: min(420px, 100%);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-radius: var(--radius);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+.modal h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+.modal button {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ochre);
+  cursor: pointer;
+}
+.modal button:hover {
+  background: #e5a642;
+}
+.modal .preview-button {
+  margin-top: 4px;
+}
+
+/* предпросмотр на весь экран */
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  padding: 16px;
+  background: #2b281d;
+}
+.preview-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ochre);
+  cursor: pointer;
+  font-size: 15px;
+}
+.preview-close:hover {
+  background: #e5a642;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  z-index: 40;
+  max-width: calc(100vw - 32px);
+  padding: 12px 18px;
+  border-radius: 10px;
+  color: var(--paper);
+  background: var(--ink);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translate(-50%, 12px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (max-width: 1050px) {
+  .app {
+    padding: 12px 12px 0;
+  }
+  .workspace {
+    grid-template-columns: 112px minmax(0, 1fr);
+  }
+  .settings {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+  .settings h2,
+  .preview-button {
+    grid-column: 1 / -1;
+  }
+  .preview-button {
+    margin-top: 0;
+  }
+  .tool-button {
+    min-height: 100px;
+  }
+}
+@media (max-width: 650px) {
+  .app {
+    padding: 0;
+  }
+  .topbar {
+    border-radius: 0;
+    padding: 0 14px;
+    min-height: 58px;
+  }
+  .brand {
+    font-size: 22px;
+  }
+  .workspace {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .tool-sidebar {
+    order: 2;
+    padding: 8px;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 6px;
+  }
+  .tool-button {
+    flex: 0 0 88px;
+    min-height: 82px;
+    padding: 8px 5px;
+    border: 0;
+  }
+  .tool-button svg {
+    width: 27px;
+    height: 27px;
+  }
+  .tool-button span {
+    font-size: 11px;
+  }
+  /* меню «Вставка картинки» на мобильной версии открывается вниз */
+  .tool-button-wrap {
+    flex: 0 0 88px;
+  }
+  /* сайдбар здесь прокручивается (overflow-x), поэтому обычное меню обрезалось бы:
+     показываем его фиксированной шторкой у нижнего края экрана */
+  .tool-menu {
+    position: fixed;
+    left: 50%;
+    top: auto;
+    bottom: 16px;
+    transform: translateX(-50%);
+    width: min(320px, calc(100vw - 32px));
+  }
+  .tool-menu::before {
+    display: none;
+  }
+  /* на мобильной версии меню — фиксированная шторка у нижнего края */
+  .tool-menu-time {
+    bottom: 16px;
+  }
+  .editor {
+    order: 1;
+    padding: 22px 14px;
+  }
+  .editor-heading {
+    align-items: flex-start;
+  }
+  .save-status {
+    max-width: 100px;
+    white-space: normal;
+    text-align: right;
+  }
+  .postcard {
+    height: 250px;
+  }
+  .quick-actions {
+    gap: 10px;
+  }
+  .quick-card {
+    min-height: 115px;
+    padding: 12px;
+    gap: 10px;
+  }
+  .quick-card span {
+    font-size: 14px;
+  }
+  .quick-card svg {
+    width: 38px;
+    height: 38px;
+  }
+  .settings {
+    order: 3;
+    display: flex;
+    padding: 20px 16px;
+    gap: 16px;
+  }
+  .settings h2,
+  .preview-button {
+    grid-column: auto;
+  }
+  .preview-button {
+    margin-top: 0;
+  }
+}
+
+/* ——— принудительный ландшафт на телефоне ——— */
+/* Экран-подсказка: в портретном режиме на телефоне редактор просит повернуть устройство,
+   чтобы холст открытки и панели инструментов помещались целиком. */
+.rotate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+  background: #f1eee7;
+  color: var(--ink);
+}
+.rotate-overlay p {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+.rotate-overlay small {
+  max-width: 340px;
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.75;
+}
+.rotate-overlay button {
+  padding: 12px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ochre);
+  cursor: pointer;
+  font-size: 15px;
+}
+.rotate-overlay button:hover {
+  background: #e5a642;
+}
+.rotate-phone {
+  width: 56px;
+  height: 94px;
+  border: 3px solid var(--ink);
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  animation: rotate-phone 2s ease-in-out infinite;
+}
+.rotate-phone-screen {
+  width: 42px;
+  height: 72px;
+  border-radius: 6px;
+  background: rgba(37, 35, 24, 0.12);
+}
+@keyframes rotate-phone {
+  0%, 25% { transform: rotate(0deg); }
+  60%, 100% { transform: rotate(90deg); }
+}
+
+/* Компактная горизонтальная раскладка редактора на телефоне (ландшафт):
+   инструменты слева, холст по центру, настройки справа — всё в один экран. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .app {
+    padding: 0;
+  }
+  .topbar {
+    min-height: 46px;
+    padding: 0 12px;
+    border-radius: 0;
+  }
+  .brand {
+    font-size: 20px;
+  }
+  .workspace {
+    display: grid;
+    grid-template-columns: 84px minmax(0, 1fr) 200px;
+    min-height: 0;
+  }
+  .tool-sidebar {
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 6px;
+    gap: 2px;
+  }
+  .tool-button {
+    min-height: 0;
+    flex: 0 0 auto;
+    padding: 6px 4px;
+    gap: 4px;
+  }
+  .tool-button svg {
+    width: 22px;
+    height: 22px;
+  }
+  .tool-button span {
+    font-size: 10px;
+  }
+  .editor {
+    padding: 8px 10px;
+    gap: 8px;
+    overflow-y: auto;
+  }
+  .editor-heading h2 {
+    font-size: 18px;
+  }
+  .eyebrow {
+    display: none;
+  }
+  .postcard {
+    height: auto;
+    flex: 1 1 auto;
+    min-height: 160px;
+  }
+  .copyright-note {
+    display: none;
+  }
+  .quick-actions {
+    gap: 8px;
+  }
+  .quick-card {
+    min-height: 0;
+    padding: 6px;
+    gap: 4px;
+    flex-direction: row;
+  }
+  .quick-card span {
+    font-size: 12px;
+  }
+  .quick-card svg {
+    width: 22px;
+    height: 22px;
+  }
+  .settings {
+    grid-column: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+    overflow-y: auto;
+  }
+  .settings h2,
+  .preview-button {
+    grid-column: auto;
+  }
+  .settings h2 {
+    font-size: 16px;
+  }
+  .preview-button {
+    min-height: 40px;
+    font-size: 14px;
+  }
+}

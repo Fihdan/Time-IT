@@ -1,0 +1,19 @@
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+
+export default {
+  plugins: [react()],
+  // PDF-файлы должны отдаваться как отдельные файлы, а не base64-строками
+  // (иначе <iframe> с PDF не откроется в Firefox)
+  assetsInlineLimit: 0,
+  server: {
+    host: true, // слушаем все интерфейсы, чтобы фронт был доступен по локальной сети
+    allowedHosts: ['oddly-tonic-mule.cloudpub.ru'],
+    proxy: {
+      '/api': {
+        target: 'http://192.168.31.249:5173',
+        rewrite: (p) => p.replace(/^\/api/, ''),
+      },
+    },
+  }
+};
