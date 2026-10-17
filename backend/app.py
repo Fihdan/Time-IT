@@ -1,6 +1,5 @@
 import os
 import secrets
-from datetime import datetime, timezone
 from fastapi import FastAPI, UploadFile, Response, Request, File, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -34,6 +33,7 @@ origins = [
     "http://127.0.0.1:5173",
     "http://192.168.31.249:5173",  # Адрес вашего фронтенда из скриншота
     "http://192.168.31.173:5173",
+    "https://abundantly-dazzled-gazelle.cloudpub.ru"
 ]
 
 # 3. Добавляем middleware в приложение
@@ -69,10 +69,10 @@ def recovery_password(login: str):
     user_password = db.auth(login)
 
 
-    smtp_server = os.getenv('SMTP_SERVER')  # по IP-адресу Gmail разрывает соединение (WebLoginRequired)
-    smtp_port = int(os.getenv('SMTP_PORT'))
-    sender_email = os.getenv('SENDER_EMAIL')
-    password = os.getenv('SENDER_PASSWORD')  # Используйте пароль приложения, а не основной пароль
+    smtp_server = 'smtp.yandex.ru'
+    smtp_port = 465
+    sender_email = 'hakatonecho@yandex.ru'
+    password = 'qleufylhmzevrhqr'
     receiver_email = email
 
     # Создание сообщения
@@ -469,22 +469,9 @@ def delete_card(id_card: int):
 def get_profile(login: str):
     return db.get_profile(login)
 
-def _norm_date(s: str):
-    """Приводит дату к UTC-строке вида 2026-10-16T12:00:00Z; None, если формат неверный."""
-    try:
-        d = datetime.fromisoformat(s.strip().replace("Z", "+00:00").replace(" ", "T"))
-    except ValueError:
-        return None
-    if d.tzinfo is None:  # без часового пояса считаем UTC
-        d = d.replace(tzinfo=timezone.utc)
-    return d.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
 @app.post("/update_start")
 def update_start(id_card: int, date_start: str):
-    norm = _norm_date(date_start)
-    if norm is None:
-        return False  # фронт воспринимает false как ошибку сохранения
-    return db.update_date_start(id_card, norm)
+    return db.update_date_start(id_card, date_start)
 
 @app.post("/update_end")
 def update_end(id_card: int, date_end: str):

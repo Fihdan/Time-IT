@@ -1,6 +1,6 @@
 from pathlib import Path
 
-def create_directory(id_card:int):
+def create_directory(id_card: int):
 
     main_folder = Path(f"save/{id_card}")
 

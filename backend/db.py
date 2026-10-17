@@ -134,6 +134,7 @@ class DBManager:
         result = self._execute_query(query, (login,), fetch="all")
         return result
 
+
     def update_voice_mix(self, id_card: int, new_voice_mix: Optional[int]):#work
         query = "UPDATE cards SET voice_mix = ? WHERE id_card = ?;"
         try:
@@ -436,19 +437,11 @@ class DBManager:
         result = self._execute_query(query, (id_card,), fetch="all")
         return result
 
-    def create_image(self, id_card: int, #work
-                        x: int = None,
-                        y: int = None,
-                        w: int = None,
-                        h: int = None,
-                        z: int = None,
-                        angle: int = None,
-                        image: str = None):
+    def create_image(self, id_card: int):
         query = "INSERT INTO images (id_card, x, y, w, h, z, angle, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?);"
                     
         result = self._execute_query(query, (id_card, None, None, None, None, None, None, None), fetch="lastrowid")
         return result
-
 
         
     def update_position_x_by_image(self, id_image: int, x: int) -> bool:
